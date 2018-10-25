@@ -3,7 +3,7 @@ An SDK for the Flags application written in PHP
 
 ### Installation
 
-```php
+```bash
 composer require flags/php-sdk
 ```
 
@@ -40,3 +40,10 @@ Here, `$applicationUser` is a string representing the application user's identif
 
 You can see a working example by running `php examples/demo.php`. You will need to provide valid user information in `examples/demo.json`.
 
+### Contributing
+
+1. Clone this repo.
+
+2. Run ```bash composer update``` from the root directory.
+
+3. Check everything is working by running the tests via ```bash vendor/bin/phpunit```
