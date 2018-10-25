@@ -8,7 +8,6 @@ use Flags\Exception\ConnectionException;
 class Client
 {
     private $baseUrl = 'https://flags-cerban-rodriguez.mybluemix.net/';
-    private $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJleHAiOjE1NDA1NjM4MjB9.zOY2RIh2wKnwb6T5oe7-U9jouV-cu2Ri2hdm1iZbEUQ';
 
     /**
      * @param RequestInterface $request
@@ -61,7 +60,6 @@ class Client
      */
     private function getRequestHeaders(array $headers) {
         $mandatoryHeaders = [
-            'Authorization: ' . $this->token,
             'Content-type: application/json'
         ];
 

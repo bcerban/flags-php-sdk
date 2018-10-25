@@ -3,6 +3,8 @@
 namespace Flags\Connection;
 
 
+use Flags\Exception\ConnectionException;
+
 class Response
 {
     /** @var string */
@@ -52,5 +54,20 @@ class Response
     public function setResponseBody(string $responseBody): void
     {
         $this->responseBody = $responseBody;
+    }
+
+    /**
+     * @return array
+     * @throws ConnectionException
+     */
+    public function getResponseBodyAsArray(): array
+    {
+        $body = json_decode($this->responseBody, true);
+
+        if (!$body || !is_array($body)) {
+            throw new ConnectionException(sprintf("Response body can't be parsed: %s", $responseBody));
+        }
+
+        return $body;
     }
 }

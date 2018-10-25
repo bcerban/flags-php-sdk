@@ -11,10 +11,10 @@ use Flags\Exception\EvaluationException;
 
 class Evaluator
 {
-    const CODE_OK = 200;
-    const KEY_EVALUATION = 'evaluation';
-    const KEY_ERROR      = 'error';
-    const KEY_MESSAGE    = 'message';
+    const STATUS_EVALUATED = 200;
+    const KEY_EVALUATION   = 'evaluation';
+    const KEY_ERROR        = 'error';
+    const KEY_MESSAGE      = 'message';
 
     /** @var Client  */
     private $client;
@@ -32,19 +32,20 @@ class Evaluator
 
     /**
      * @param Flag $flag
-     * @param string $user
+     * @param User $user
+     * @param string $applicationUser
      * @return Evaluation
-     * @throws EvaluationException
      * @throws ConnectionException
+     * @throws EvaluationException
      */
-    public function evaluate(Flag $flag, $user = '')
+    public function evaluate(Flag $flag, User $user, $applicationUser = '')
     {
         $this->flag = $flag;
 
-        $request = new EvaluationRequest($flag, $user);
+        $request = new EvaluationRequest($flag, $user, $applicationUser);
         $response = $this->client->process($request);
 
-        if ($response->getStatusCode() == self::CODE_OK) {
+        if ($response->getStatusCode() == self::STATUS_EVALUATED) {
             return $this->processEvaluationResponse($response);
         }
 
@@ -58,7 +59,7 @@ class Evaluator
      */
     private function processEvaluationResponse(Response $response)
     {
-        $body = $this->parseResponseBody($response->getResponseBody());
+        $body = $response->getResponseBodyAsArray();
 
         if (!isset($body[self::KEY_EVALUATION])) {
             throw new ConnectionException(sprintf("Evaluation missing from response body: %s", $response->getResponseBody()));
@@ -74,33 +75,16 @@ class Evaluator
      */
     private function processErrorResponse(Response $response)
     {
-        $error = '';
-        $body = $this->parseResponseBody($response->getResponseBody());
+        $body = $response->getResponseBodyAsArray();
 
         if (isset($body[self::KEY_ERROR])) {
             $error = $body[self::KEY_ERROR];
         } else if (isset($body[self::KEY_MESSAGE])) {
             $error = $body[self::KEY_MESSAGE];
         } else {
-            throw new ConnectionException(sprintf("Message missing from response body: %s", $response->getResponseBody()));
+            $error = sprintf("Message missing from response body: %s", $response->getResponseBody());
         }
 
         return $error;
-    }
-
-    /**
-     * @param string $responseBody
-     * @return mixed
-     * @throws ConnectionException
-     */
-    private function parseResponseBody(string $responseBody)
-    {
-        $body = json_decode($responseBody, true);
-
-        if (!$body || !is_array($body)) {
-            throw new ConnectionException(sprintf("Response body can't be parsed: %s", $responseBody));
-        }
-
-        return $body;
     }
 }
