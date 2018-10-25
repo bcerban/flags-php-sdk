@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.1-apache-node
+
+    working_directory: ~/flags-sdk
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: composer update
+
+      - run:
+          name: Run tests
+          command: vendor/bin/phpunit
