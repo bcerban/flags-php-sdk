@@ -6,8 +6,12 @@ echo "--------------------------------------------------------------------------
 echo "- This demo shows how to obtain a token and evaluate a flag within the Flags application -\n";
 echo "------------------------------------------------------------------------------------------\n\n";
 
+// Load example data
+$path = __DIR__ . '/demo.json';
+$json = json_decode(file_get_contents($path), true);
+
 echo "- Request an auth token to connect to the service \n";
-$user = new \Flags\User('demouser@flags.com', 'q1w2e3r4');
+$user = new \Flags\User($json['user']['email'], $json['user']['password']);
 $authorizer = new \Flags\Authorizer();
 
 try {
@@ -15,14 +19,14 @@ try {
 
     echo "- Initialize a flag with identifier \n";
 
-    $flag = new \Flags\Flag('zonK7735w4P1qecQCB1flw');
-    $applicationUser = 'NLkbalhbjhdbvksjdhbfva';
+    $flag = new \Flags\Flag($json['flag_identifier']);
+    $applicationUser = $json['user_identifier'];
 
     echo "- Create an evaluator instance \n";
 
     $evaluator = new \Flags\Evaluator();
 
-    echo "- Evaluate the flag \n";
+    echo "- Evaluate the flag \n\n";
     $response = $evaluator->evaluate($flag, $user, $applicationUser);
     $result = $response->getResult() ? 'On' : 'Off';
     echo sprintf("Flag %s is %s for user %s \n\n", $flag->getIdentifier(), $result, $applicationUser);
