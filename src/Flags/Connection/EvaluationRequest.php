@@ -3,6 +3,7 @@
 namespace Flags\Connection;
 
 use Flags\Flag;
+use Flags\User;
 
 class EvaluationRequest implements RequestInterface
 {
@@ -11,24 +12,26 @@ class EvaluationRequest implements RequestInterface
     /** @var Flag */
     private $flag;
 
-    /** @var string */
+    /** @var User */
     private $user;
 
-    /** @var string[] */
-    private $config = [];
-
-    /** @var string[] */
-    private $headers = [];
+    /** @var string */
+    private $applicationUser;
 
     /**
      * EvaluatorRequest constructor.
      * @param Flag $flag
-     * @param string $user
+     * @param string $applicationUser
      */
-    public function __construct(Flag $flag, $user = '')
+    public function __construct(
+        Flag $flag,
+        User $user,
+        $applicationUser = ''
+    )
     {
         $this->flag = $flag;
         $this->user = $user;
+        $this->applicationUser = $applicationUser;
     }
 
     /**
@@ -36,7 +39,7 @@ class EvaluationRequest implements RequestInterface
      */
     public function getConfig()
     {
-        return $this->config;
+        return [];
     }
 
     public function getMethod()
@@ -51,7 +54,9 @@ class EvaluationRequest implements RequestInterface
 
     public function getHeaders()
     {
-        return $this->headers;
+        return [
+            'Authorization: ' . $this->user->getToken()
+        ];
     }
 
     /**
@@ -61,7 +66,7 @@ class EvaluationRequest implements RequestInterface
     {
         return [
             'flag_identifier' => $this->flag->getIdentifier(),
-            'user_identifier' => $this->user
+            'user_identifier' => $this->applicationUser
         ];
     }
 
