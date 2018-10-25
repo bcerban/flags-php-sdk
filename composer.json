@@ -1,0 +1,32 @@
+{
+  "name": "flags/php-sdk",
+  "description": "An SDK for the Flags application written in PHP.",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Bettina Cerban",
+      "email": "bettina@flags.com"
+    },
+    {
+      "name": "Lorenzo Rodriguez",
+      "email": "lorenzo@flags.com"
+    }
+  ],
+  "require": {
+    "php": "~7.1.0",
+    "ext-curl": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Flags\\": "src/Flags/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Flags\\Tests\\": "tests/Flags/Tests/"
+    }
+  }
+}
