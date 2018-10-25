@@ -6,7 +6,6 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
         convertErrorsToExceptions="true"
-        syntaxCheck="true"
         verbose="true"
 >
     <!--<php>-->
@@ -14,8 +13,11 @@
     <!--</php>-->
 
     <testsuites>
-        <testsuite>
-            <directory>tests/Flags</directory>
+        <testsuite name="Flags Unit Tests">
+            <directory>tests/Flags/Tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Flags Integration Tests">
+            <directory>tests/Flags/Tests/Integration</directory>
         </testsuite>
     </testsuites>
 
