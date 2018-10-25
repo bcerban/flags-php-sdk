@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        bootstrap="tests/bootstrap.php"
+        colors="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        convertErrorsToExceptions="true"
+        verbose="true"
+>
+    <!--<php>-->
+        <!--<env name="ES_TEST_HOST" value="http://localhost:9200"/>-->
+    <!--</php>-->
+
+    <testsuites>
+        <testsuite name="Flags Unit Tests">
+            <directory>tests/Flags/Tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Flags Integration Tests">
+            <directory>tests/Flags/Tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+
+</phpunit>
