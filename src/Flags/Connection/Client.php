@@ -4,6 +4,7 @@ namespace Flags\Connection;
 
 
 use Flags\Exception\ConnectionException;
+use Flags\Exception\ConnectionTimeoutException;
 
 class Client
 {
@@ -13,12 +14,16 @@ class Client
      * @param RequestInterface $request
      * @return Response
      * @throws ConnectionException
+     * @throws ConnectionTimeoutException
      */
     public function process(RequestInterface $request) {
         $handle = curl_init();
 
         curl_setopt($handle, CURLOPT_URL, $this->getRequestUrl($request->getUri()));
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+
+        // This option sets the timeout to connect to the remote server
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 3);
 
         if ($request->getMethod() === RequestInterface::METHOD_POST) {
             curl_setopt($handle, CURLOPT_POST, true);
@@ -36,8 +41,13 @@ class Client
 
         $responseCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
         $error = curl_error($handle);
+        $errorNumber = curl_errno($handle);
 
         curl_close($handle);
+
+        if ($errorNumber === CURLE_OPERATION_TIMEDOUT) {
+            throw new ConnectionTimeoutException($error);
+        }
 
         if ($error !== '') {
             throw new ConnectionException($error);

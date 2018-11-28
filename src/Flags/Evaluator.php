@@ -7,6 +7,7 @@ use Flags\Connection\Client;
 use Flags\Connection\EvaluationRequest;
 use Flags\Connection\Response;
 use Flags\Exception\ConnectionException;
+use Flags\Exception\ConnectionTimeoutException;
 use Flags\Exception\EvaluationException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -89,10 +90,14 @@ class Evaluator
      */
     private function evaluateRequest(EvaluationRequest $request)
     {
-        $response = $this->client->process($request);
+        try {
+            $response = $this->client->process($request);
 
-        if ($response->getStatusCode() == self::STATUS_EVALUATED) {
-            return $this->processEvaluationResponse($request, $response);
+            if ($response->getStatusCode() == self::STATUS_EVALUATED) {
+                return $this->processEvaluationResponse($request, $response);
+            }
+        } catch(ConnectionTimeoutException $e) {
+            return new Evaluation($this->flag, false);
         }
 
         throw new EvaluationException($this->processErrorResponse($response));
