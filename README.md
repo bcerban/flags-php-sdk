@@ -44,6 +44,6 @@ You can see a working example by running `php examples/demo.php`. You will need 
 
 1. Clone this repo.
 
-2. Run ```bash composer update``` from the root directory.
+2. Run ```composer update``` from the root directory.
 
-3. Check everything is working by running the tests via ```bash vendor/bin/phpunit```
+3. Check everything is working by running the tests via ```vendor/bin/phpunit```
